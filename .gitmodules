@@ -1,3 +1,7 @@
 [submodule "spinner"]
 	path = spinner
 	url = https://github.com/LSC-Unicamp/spinner
+[submodule "task-bench"]
+	path = task-bench
+	url = https://gitlab.com/ompcluster/task-bench.git
+	branch = looping-tb
