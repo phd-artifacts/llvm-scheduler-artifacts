@@ -1,0 +1,5 @@
+*.sif
+libomp/
+main/
+multiqueue/
+tasksharing

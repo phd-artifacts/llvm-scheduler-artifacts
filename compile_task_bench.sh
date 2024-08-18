@@ -6,7 +6,7 @@ set -e
 branches=("main" "multiqueue" "tasksharing" "libomp")
 
 # Folder with the .sif files
-sif_folder="/home/users/r176848/remy/sif"
+sif_folder="."
 
 # Function to map branches to their respective .sif paths
 map_branch_to_sif() {
@@ -36,48 +36,30 @@ map_branch_to_sif() {
 # Loop through each branch and execute the build process
 for branch in "${branches[@]}"; do
     echo "Compiling Task-Bench for branch: $branch"
-    path="/home/users/r176848/remy/llvm/$branch"
-    install_path="/home/users/r176848/remy/llvm/installs/$branch/Release"
-
-    # Make install directory
-    mkdir -p $install_path
-    cd $install_path
-
-    export CC=clang
-    export CXX=clang++
-
     # Determine the correct SIF path for the current branch
     sif_path=$(map_branch_to_sif "$branch")
-
-    # Navigate to the LLVM directory and clone task-bench if it doesn't exist
-    mkdir -p $path
-    cd $path
-    if [ ! -d "task-bench" ]; then
-      git clone https://gitlab.com/ompcluster/task-bench.git
-      cd task-bench
-      git checkout looping-tb
-    else
-      cd task-bench
-      git fetch
-      git checkout looping-tb
-      git pull
+    
+    # Remove the existing branch directory and copy the task-bench directory
+    # if exists
+    if [ -d $branch ]; then
+      rm -r $branch
     fi
+
+    cp -r task-bench $branch
+
+    cd $branch
 
     # Navigate to the task-bench directory and clean previous builds
     if [ -d "deps" ]; then
       rm -r "deps"
     fi
 
-    # Use the SIF image to build the dependencies and the project
-    singularity exec --nv $sif_path bash -c "$CC  --version"
-    singularity exec --nv $sif_path bash -c "$CXX  --version"
-    singularity exec --nv $sif_path bash -c "DEFAULT_FEATURES=0 USE_OMPCLUSTER=1 ./get_deps.sh"
-    singularity exec --nv $sif_path bash -c "DEFAULT_FEATURES=0 USE_OMPCLUSTER=1 ./build_all.sh"
 
-    if [ $? -ne 0 ]; then
-        echo "Failed to compile Task-Bench for branch: $branch"
-        exit 1
-    fi
+    # Use the SIF image to build the dependencies and the project
+    singularity exec --nv ../$sif_path bash -c "CC=clang CXX=clang++ DEFAULT_FEATURES=0 USE_OMPCLUSTER=1 ./get_deps.sh"
+    singularity exec --nv ../$sif_path bash -c "CC=clang CXX=clang++ DEFAULT_FEATURES=0 USE_OMPCLUSTER=1 ./build_all.sh"
+    cd ..
+
 done
 
 echo "Compilation complete for all branches."
