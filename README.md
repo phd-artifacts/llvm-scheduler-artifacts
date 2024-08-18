@@ -1,3 +1,11 @@
+# Reproducibility artifacts
+
+This repository contains scripts for both running and plotting all the data measured and ported in the paper. The instructions are structured as follows: we use Singularity images the the consolidated running enviroment for each implementation.
+
+From that, we rely on the helper application Spinner (added here as a submodule) to manage repeated executions and output capture. To reproduce, in a enviroment with 28 nodes, follow the steps below to pull all container images, then use the helper script to compile task bench using each of the containers.
+
+Finaly, use Spinner with the bench_settings.yaml paramter swap file. Finally, use the plots.ipynb to plot the results.
+
 # Getting Singularity images
 ```sh
 singularity pull docker://ompcluster/hpcbase:ubuntu20.04-cuda11.2-mpich-ofed5
@@ -31,8 +39,8 @@ source spinner/.venv/bin/activate
 module load mpich/4.0.2-cuda-12.4.0-ucx
 module load singularity/3.7.1
 
-# or host_list=$(scontrol show hostname $(echo "$SLURM_JOB_NODELIST" | head -n 4 | tr '\n' ',' | sed 's/,$//'))
+# or host_list=$(scontrol show hostname $(echo "$SLURM_JOB_NODELIST" | tr '\n' ',' | sed 's/,$//'))
 
-spinner -c bench_settings.yaml -r T -e T --hosts sorgan
+spinner -c bench_settings.yaml -r T -e T --hosts host1,host2,host3,
 
 ```
