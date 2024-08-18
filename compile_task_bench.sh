@@ -49,8 +49,15 @@ for branch in "${branches[@]}"; do
     # Determine the correct SIF path for the current branch
     sif_path=$(map_branch_to_sif "$branch")
 
+    # Navigate to the llvm directory and clone task-bench if it doesn't exist
+    mkdir -p $path
+    cd $path
+    if [ ! -d "task-bench" ]; then
+      git clone https://gitlab.com/ompcluster/task-bench.git $path
+    fi
+
     # Navigate to the task-bench directory and clean previous builds
-    cd /home/users/r176848/remy/task-bench/$branch
+    cd task-bench/$branch
     if [ -d "deps" ]; then
       rm -r "deps"
     fi
