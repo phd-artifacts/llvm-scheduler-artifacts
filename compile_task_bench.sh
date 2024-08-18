@@ -39,7 +39,7 @@ for branch in "${branches[@]}"; do
     path="/home/users/r176848/remy/llvm/$branch"
     install_path="/home/users/r176848/remy/llvm/installs/$branch/Release"
 
-    # make install directory
+    # Make install directory
     mkdir -p $install_path
     cd $install_path
 
@@ -49,15 +49,21 @@ for branch in "${branches[@]}"; do
     # Determine the correct SIF path for the current branch
     sif_path=$(map_branch_to_sif "$branch")
 
-    # Navigate to the llvm directory and clone task-bench if it doesn't exist
+    # Navigate to the LLVM directory and clone task-bench if it doesn't exist
     mkdir -p $path
     cd $path
     if [ ! -d "task-bench" ]; then
-      git clone https://gitlab.com/ompcluster/task-bench.git $path
+      git clone https://gitlab.com/ompcluster/task-bench.git
+      cd task-bench
+      git checkout looping-tb
+    else
+      cd task-bench
+      git fetch
+      git checkout looping-tb
+      git pull
     fi
 
     # Navigate to the task-bench directory and clean previous builds
-    cd task-bench/$branch
     if [ -d "deps" ]; then
       rm -r "deps"
     fi
