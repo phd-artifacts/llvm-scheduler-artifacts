@@ -1,0 +1,334 @@
+metadata:
+  description: Scheduler benchmarks
+  version: "1.0"
+  runs: 15
+  timeout: 200
+  retry: True
+  retry_limit: 0
+
+  main:
+    bench_path: /home/users/r176848/remy/task-bench/main
+
+    output:
+      - type: contains
+        pattern: "Scheduling"
+      - type: contains
+        pattern: "Elapsed"
+
+    plot_axis:
+      - title: Time vs Nodes
+        x_axis: nodes
+        y_axis: time # reserved name
+        group_by: nodes # get mean from results with same number of nodes
+
+
+    # command executes in {{bench_path}}
+    command:
+      template: >
+        OMP_NUM_THREADS=8
+        LIBOMP_NUM_HIDDEN_HELPER_THREADS=8
+        OMPCLUSTER_TASK_GRAPH_DUMP_PATH="{{bench_path}}/graph/"
+        mpirun -np {{nodes}} -ppn 1
+        -hosts "{{hosts}}"
+        singularity exec --nv {{sif_path}} bash -c "
+        {{bench_path}}/ompcluster/main -steps {{steps}} -type {{type}} -kernel compute_bound -iter {{iter}} -width {{steps}}
+        "
+
+  main_rr:
+    bench_path: /home/users/r176848/remy/task-bench/main
+
+    output:
+      - type: contains
+        pattern: "Scheduling"
+      - type: contains
+        pattern: "Elapsed"
+
+    plot_axis:
+      - title: Time vs Nodes
+        x_axis: nodes
+        y_axis: time # reserved name
+        group_by: nodes # get mean from results with same number of nodes
+
+
+    # command executes in {{bench_path}}
+    command:
+      template: >
+        OMPCLUSTER_SCHEDULER="roundrobin"
+        OMPCLUSTER_BLOCKING_SCHEDULER=0
+        OMP_NUM_THREADS=8
+        LIBOMP_NUM_HIDDEN_HELPER_THREADS=8
+        OMPCLUSTER_TASK_GRAPH_DUMP_PATH="{{bench_path}}/graph/"
+        mpirun -np {{nodes}} -ppn 1
+        -hosts "{{hosts}}"
+        singularity exec --nv {{sif_path}} bash -c "
+        {{bench_path}}/ompcluster/main -steps {{steps}} -type {{type}} -kernel compute_bound -iter {{iter}} -width {{steps}}
+        "
+
+  main_rr_blk:
+    bench_path: /home/users/r176848/remy/task-bench/main
+
+    output:
+      - type: contains
+        pattern: "Scheduling"
+      - type: contains
+        pattern: "Elapsed"
+
+    plot_axis:
+      - title: Time vs Nodes
+        x_axis: nodes
+        y_axis: time # reserved name
+        group_by: nodes # get mean from results with same number of nodes
+
+
+    # command executes in {{bench_path}}
+    command:
+      template: >
+        OMPCLUSTER_SCHEDULER="roundrobin"
+        OMPCLUSTER_BLOCKING_SCHEDULER=1
+        OMP_NUM_THREADS=8
+        LIBOMP_NUM_HIDDEN_HELPER_THREADS=8
+        OMPCLUSTER_TASK_GRAPH_DUMP_PATH="{{bench_path}}/graph/"
+        mpirun -np {{nodes}} -ppn 1
+        -hosts "{{hosts}}"
+        singularity exec --nv {{sif_path}} bash -c "
+        {{bench_path}}/ompcluster/main -steps {{steps}} -type {{type}} -kernel compute_bound -iter {{iter}} -width {{steps}}
+        "
+
+  libomp:
+    bench_path: /home/users/r176848/remy/task-bench/libomp
+
+    output:
+      - type: contains
+        pattern: "Scheduling"
+      - type: contains
+        pattern: "Elapsed"
+
+    plot_axis:
+      - title: Time vs Nodes
+        x_axis: nodes
+        y_axis: time # reserved name
+        group_by: nodes # get mean from results with same number of nodes
+
+
+    # command executes in {{bench_path}}
+    command:
+      template: >
+        OMP_NUM_THREADS=8
+        LIBOMP_NUM_HIDDEN_HELPER_THREADS=8
+        OMPCLUSTER_TASK_GRAPH_DUMP_PATH="{{bench_path}}/graph/"
+        mpirun -np {{nodes}} -ppn 1
+        -hosts "{{hosts}}"
+        singularity exec --nv {{sif_path}} bash -c "
+        {{bench_path}}/ompcluster/main -steps {{steps}} -type {{type}} -kernel compute_bound -iter {{iter}} -width {{steps}}
+        "
+
+  tasksharing:
+    bench_path: /home/users/r176848/remy/task-bench/tasksharing
+
+    output:
+      - type: contains
+        pattern: "Scheduling"
+      - type: contains
+        pattern: "Elapsed"
+
+    plot_axis:
+      - title: Time vs Nodes
+        x_axis: nodes
+        y_axis: time # reserved name
+        group_by: nodes # get mean from results with same number of nodes
+
+
+    # command executes in {{bench_path}}
+    command:
+      template: >
+        OMP_NUM_THREADS=8
+        LIBOMP_NUM_HIDDEN_HELPER_THREADS=8
+        OMPCLUSTER_TASK_GRAPH_DUMP_PATH="{{bench_path}}/graph/"
+        mpirun -np {{nodes}} -ppn 1
+        -hosts "{{hosts}}"
+        singularity exec --nv {{sif_path}} bash -c "
+        {{bench_path}}/ompcluster/main -steps {{steps}} -type {{type}} -kernel compute_bound -iter {{iter}} -width {{steps}}
+        "
+
+  libomp:
+    bench_path: /home/users/r176848/remy/task-bench/libomp
+
+    output:
+      - type: contains
+        pattern: "Scheduling"
+      - type: contains
+        pattern: "Elapsed"
+
+    plot_axis:
+      - title: Time vs Nodes
+        x_axis: nodes
+        y_axis: time # reserved name
+        group_by: nodes # get mean from results with same number of nodes
+
+
+    # command executes in {{bench_path}}
+    command:
+      template: >
+        OMP_NUM_THREADS=8
+        LIBOMP_NUM_HIDDEN_HELPER_THREADS=8
+        OMPCLUSTER_TASK_GRAPH_DUMP_PATH="{{bench_path}}/graph/"
+        mpirun -np {{nodes}} -ppn 1
+        -hosts "{{hosts}}"
+        singularity exec --nv {{sif_path}} bash -c "
+        {{bench_path}}/ompcluster/main -steps {{steps}} -type {{type}} -kernel compute_bound -iter {{iter}} -width {{steps}}
+        "
+
+  multiqueue:
+    bench_path: /home/users/r176848/remy/task-bench/multiqueue
+
+    output:
+      - type: contains
+        pattern: "Scheduling"
+      - type: contains
+        pattern: "Elapsed"
+
+    plot_axis:
+      - title: Time vs Nodes
+        x_axis: nodes
+        y_axis: time # reserved name
+        group_by: nodes # get mean from results with same number of nodes
+
+
+    # command executes in {{bench_path}}
+    command:
+      template: >
+        OMP_NUM_THREADS=8
+        LIBOMP_NUM_HIDDEN_HELPER_THREADS={{nodes - 1}}
+        OMPCLUSTER_TASK_GRAPH_DUMP_PATH="{{bench_path}}/graph/"
+        mpirun -np {{nodes}} -ppn 1
+        -hosts "{{hosts}}"
+        singularity exec --nv {{sif_path}} bash -c "
+        {{bench_path}}/ompcluster/main -steps {{steps}} -type {{type}} -kernel compute_bound -iter {{iter}} -width {{steps}}
+        "
+
+main:
+  steps:
+    - 32
+  type:
+    - fft
+    - trivial
+    - stencil_1d
+  iter:
+    - 100000000
+    - 1000
+
+  nodes:
+    - 28
+    - 20
+    - 16
+    - 10
+    - 8
+    - 4
+    - 3
+  sif_path:
+    - "/home/users/r176848/remy/sif/runtime-dev_result_scheduler-main-ubuntu20.04-cuda11.2-mpich.sif"
+
+main_rr_blk:
+  steps:
+    - 32
+  type:
+    - fft
+    - trivial
+    - stencil_1d
+  iter:
+    - 100000000
+    - 1000
+  nodes:
+    - 28
+    - 20
+    - 16
+    - 10
+    - 8
+    - 4
+    - 3
+  sif_path:
+    - "/home/users/r176848/remy/sif/runtime-dev_result_scheduler-main-ubuntu20.04-cuda11.2-mpich.sif"
+
+main_rr:
+  steps:
+    - 32
+  type:
+    - fft
+    - trivial
+    - stencil_1d
+  iter:
+    - 100000000
+    - 1000
+  nodes:
+    - 28
+    - 20
+    - 16
+    - 10
+    - 8
+    - 4
+    - 3
+  sif_path:
+    - "/home/users/r176848/remy/sif/runtime-dev_result_scheduler-main-ubuntu20.04-cuda11.2-mpich.sif"
+
+libomp:
+  steps:
+    - 32
+  type:
+    - fft
+    - trivial
+    - stencil_1d
+  iter:
+    - 100000000
+    - 1000
+  nodes:
+    - 28
+    - 20
+    - 16
+    - 10
+    - 8
+    - 4
+    - 3
+  sif_path:
+    - "/home/users/r176848/remy/sif/runtime-dev_result_improv-135-ubuntu20.04-cuda11.2-mpich.sif"
+
+tasksharing:
+  steps:
+    - 32
+  type:
+    - fft
+    - trivial
+    - stencil_1d
+  iter:
+    - 100000000
+    - 1000
+  nodes:
+    - 28
+    - 20
+    - 16
+    - 10
+    - 8
+    - 4
+    - 3
+  sif_path:
+    - "/home/users/r176848/remy/sif/runtime-dev_result_improv-136-ubuntu20.04-cuda11.2-mpich.sif"
+
+multiqueue:
+  steps:
+    - 32
+  type:
+    - fft
+    - trivial
+    - stencil_1d
+  iter:
+    - 100000000
+    - 1000
+  nodes:
+    - 28
+    - 20
+    - 16
+    - 10
+    - 8
+    - 4
+    - 3
+  sif_path:
+    - "/home/users/r176848/remy/sif/ubuntu20.04-cuda11.2-mpich_1405812206.sif"
